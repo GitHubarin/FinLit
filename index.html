@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinLit.ch | Zinseszins & Schweizer Vorsorgesystem Dashboard</title>
+    <meta name="description" content="Interaktiver Finanzrechner und Bildungsplattform zur Visualisierung von Zinseszins, Inflation und dem Schweizer 3-Säulen-Vorsorgesystem.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax CDN for LaTeX formulas -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#logo-grad)"/>
+                        <path d="M2 17L12 22L22 17" stroke="url(#logo-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="url(#logo-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="logo-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#14b8a6"/>
+                                <stop offset="1" stop-color="#10b981"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">FinLit<span class="logo-suffix">.ch</span></span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#calculator" class="nav-item active" id="nav-calc">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="9" x2="15" y2="9"></line>
+                        <line x1="9" y1="13" x2="15" y2="13"></line>
+                        <line x1="9" y1="17" x2="15" y2="17"></line>
+                        <line x1="12" y1="9" x2="12" y2="17"></line>
+                    </svg>
+                    <span lang="de">Zinseszins-Rechner</span>
+                    <span lang="en">Compounding Calc</span>
+                </a>
+                
+                <a href="#swiss-pillars" class="nav-item" id="nav-swiss">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="12" x2="15" y2="12"></line>
+                        <line x1="12" y1="9" x2="12" y2="15"></line>
+                    </svg>
+                    <span lang="de">Säulen & Inflation</span>
+                    <span lang="en">Pillars & Inflation</span>
+                </a>
+
+                <a href="#compare" class="nav-item" id="nav-compare">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    <span lang="de">Anlageoptionen</span>
+                    <span lang="en">Compare Options</span>
+                </a>
+
+                <a href="#guide" class="nav-item" id="nav-guide">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span lang="de">Finanzwissen-Leitfaden</span>
+                    <span lang="en">Financial Literacy Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <!-- Language Selector -->
+                <div class="lang-selector-container">
+                    <span class="theme-label" lang="de">Sprache</span>
+                    <span class="theme-label" lang="en">Language</span>
+                    <div class="lang-buttons">
+                        <button class="lang-btn active" id="lang-btn-de">DE</button>
+                        <button class="lang-btn" id="lang-btn-en">EN</button>
+                    </div>
+                </div>
+
+                <!-- Dark/Light Theme Toggle -->
+                <div class="theme-toggle-container">
+                    <span class="theme-label" id="theme-label-text">Dunkelmodus</span>
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle theme">
+                        <span class="theme-toggle-thumb"></span>
+                    </button>
+                </div>
+
+                <div class="footer-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" class="github-link">
+                        <svg class="gh-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.234c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.22.694.825.576C20.565 21.795 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                        <span>GitHub Pages</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="top-header">
+                <div class="header-title-container">
+                    <h1 id="page-title">Zinseszins-Rechner</h1>
+                    <p class="header-subtitle" id="page-subtitle">Beobachten Sie, wie Ihr Geld über Zeit exponentiell wächst</p>
+                </div>
+                <div class="mobile-nav-toggle" id="mobile-toggle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </div>
+            </header>
+
+            <!-- SECTION 1: COMPOUNDING CALCULATOR -->
+            <section id="section-calculator" class="dashboard-section active">
+                <div class="grid-layout">
+                    <!-- Left: Control Inputs -->
+                    <div class="glass-card controls-card">
+                        <h2 class="card-title">
+                            <span lang="de">Anlage-Parameter</span>
+                            <span lang="en">Investment Parameters</span>
+                        </h2>
+                        
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="calc-principal">
+                                    <span lang="de">Startkapital</span>
+                                    <span lang="en">Initial Principal</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <span class="currency">CHF</span>
+                                    <input type="number" id="calc-principal-num" value="0" min="0" step="500">
+                                </div>
+                            </div>
+                            <input type="range" id="calc-principal" min="0" max="100000" value="0" step="1000" class="slider">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="calc-contribution">
+                                    <span lang="de">Regelmässige Einzahlung</span>
+                                    <span lang="en">Regular Contribution</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <span class="currency">CHF</span>
+                                    <input type="number" id="calc-contribution-num" value="500" min="0" step="50">
+                                </div>
+                            </div>
+                            <input type="range" id="calc-contribution" min="0" max="5000" value="500" step="50" class="slider">
+                        </div>
+
+                        <div class="input-group-row">
+                            <div class="input-group half">
+                                <label for="calc-contrib-freq">
+                                    <span lang="de">Einzahlungsintervall</span>
+                                    <span lang="en">Contribution Frequency</span>
+                                </label>
+                                <select id="calc-contrib-freq" class="custom-select">
+                                    <option value="12" selected lang="de">Monatlich</option>
+                                    <option value="12" selected lang="en">Monthly</option>
+                                    <option value="1" lang="de">Jährlich</option>
+                                    <option value="1" lang="en">Annually</option>
+                                </select>
+                            </div>
+                            <div class="input-group half">
+                                <label for="calc-compounding">
+                                    <span lang="de">Zinseszins-Intervall</span>
+                                    <span lang="en">Compounding Frequency</span>
+                                </label>
+                                <select id="calc-compounding" class="custom-select">
+                                    <option value="12" selected lang="de">Monatlich</option>
+                                    <option value="12" selected lang="en">Monthly</option>
+                                    <option value="1" lang="de">Jährlich</option>
+                                    <option value="1" lang="en">Annually</option>
+                                    <option value="365" lang="de">Täglich</option>
+                                    <option value="365" lang="en">Daily</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="calc-rate">
+                                    <span lang="de">Jährliche Rendite (Zins)</span>
+                                    <span lang="en">Annual Interest Rate (Return)</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="calc-rate-num" value="6.0" min="0" max="30" step="0.1">
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                            <input type="range" id="calc-rate" min="0" max="20" value="6.0" step="0.1" class="slider">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="calc-years">
+                                    <span lang="de">Anlagehorizont</span>
+                                    <span lang="en">Time Horizon</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="calc-years-num" value="30" min="1" max="60">
+                                    <span class="suffix" lang="de">Jahre</span>
+                                    <span class="suffix" lang="en">Years</span>
+                                </div>
+                            </div>
+                            <input type="range" id="calc-years" min="1" max="50" value="30" step="1" class="slider">
+                        </div>
+                    </div>
+
+                    <!-- Right: Results & Chart -->
+                    <div class="display-panel">
+                        <!-- KPI Metric Grid -->
+                        <div class="metrics-grid">
+                            <div class="metric-card glass-card">
+                                <div class="metric-label">
+                                    <span lang="de">Endguthaben</span>
+                                    <span lang="en">Future Value</span>
+                                </div>
+                                <div class="metric-value font-outfit text-primary" id="metric-future-val">CHF 505'093</div>
+                                <div class="metric-trend text-green">
+                                    <span id="metric-ratio">67.3%</span> 
+                                    <span lang="de">davon sind Zinsgewinne!</span>
+                                    <span lang="en">of this is compound interest!</span>
+                                </div>
+                            </div>
+                            <div class="metric-card glass-card">
+                                <div class="metric-label">
+                                    <span lang="de">Eingezahltes Kapital</span>
+                                    <span lang="en">Total Contributions</span>
+                                </div>
+                                <div class="metric-value font-outfit" id="metric-total-contrib">CHF 190'000</div>
+                                <div class="metric-sub">
+                                    <span lang="de">Startkapital + Beiträge</span>
+                                    <span lang="en">Principal + Additions</span>
+                                </div>
+                            </div>
+                            <div class="metric-card glass-card">
+                                <div class="metric-label">
+                                    <span lang="de">Zinsertrag</span>
+                                    <span lang="en">Total Interest Earned</span>
+                                </div>
+                                <div class="metric-value font-outfit text-secondary" id="metric-total-interest">CHF 315'093</div>
+                                <div class="metric-sub">
+                                    <span lang="de">Reiner Zinseszinsgewinn</span>
+                                    <span lang="en">Pure compounded gains</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="glass-card chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">
+                                    <span lang="de">Entwicklung des Guthabens</span>
+                                    <span lang="en">Balance Accumulation Timeline</span>
+                                </h3>
+                                <div class="chart-legend-custom">
+                                    <span class="legend-item"><span class="dot dot-principal"></span> <span lang="de">Startkapital</span><span lang="en">Principal</span></span>
+                                    <span class="legend-item"><span class="dot dot-contrib"></span> <span lang="de">Beiträge</span><span lang="en">Contributions</span></span>
+                                    <span class="legend-item"><span class="dot dot-interest"></span> <span lang="de">Zinseszins</span><span lang="en">Compound Interest</span></span>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="compoundingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SWISS PILLARS & INFLATION -->
+            <section id="section-swiss-pillars" class="dashboard-section">
+                <div class="grid-layout">
+                    <!-- Left: Control Inputs -->
+                    <div class="glass-card controls-card">
+                        <h2 class="card-title">
+                            <span lang="de">Szenario-Parameter</span>
+                            <span lang="en">Scenario Parameters</span>
+                        </h2>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="swiss-annual-contrib">
+                                    <span lang="de">Jährlicher Säule 3a Beitrag</span>
+                                    <span lang="en">Pillar 3a Annual Contribution</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <span class="currency">CHF</span>
+                                    <input type="number" id="swiss-annual-contrib-num" value="7258" min="0" max="15000">
+                                </div>
+                            </div>
+                            <input type="range" id="swiss-annual-contrib" min="0" max="10000" value="7258" step="100" class="slider">
+                            <span class="input-note">
+                                <span lang="de">Der maximale Abzug für Angestellte beträgt <strong>CHF 7'258/Jahr</strong> (2026).</span>
+                                <span lang="en">Standard employee cap is <strong>CHF 7,258/year</strong> (2026).</span>
+                            </span>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="swiss-tax-rate">
+                                    <span lang="de">Grenzsteuersatz</span>
+                                    <span lang="en">Marginal Tax Rate</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="swiss-tax-rate-num" value="25" min="0" max="50">
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                            <input type="range" id="swiss-tax-rate" min="0" max="45" value="25" step="1" class="slider">
+                            <span class="input-note">
+                                <span lang="de">Kombinierte direkte Bundes-, Kantons- & Gemeindesteuer.</span>
+                                <span lang="en">Combined Federal, Cantonal & Communal tax rate.</span>
+                            </span>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="swiss-years">
+                                    <span lang="de">Anlagehorizont</span>
+                                    <span lang="en">Investment Horizon</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="swiss-years-num" value="30" min="1" max="50">
+                                    <span class="suffix" lang="de">Jahre</span>
+                                    <span class="suffix" lang="en">Years</span>
+                                </div>
+                            </div>
+                            <input type="range" id="swiss-years" min="1" max="50" value="30" step="1" class="slider">
+                        </div>
+
+                        <h3 class="input-section-divider">
+                            <span lang="de">Markt- & Inflations-Annahmen</span>
+                            <span lang="en">Market & Inflation Assumptions</span>
+                        </h3>
+
+                        <div class="input-group">
+                            <div class="input-header">
+                                <label for="swiss-inflation">
+                                    <span lang="de">Jährliche Inflationsrate</span>
+                                    <span lang="en">Annual Inflation Rate</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="swiss-inflation-num" value="0.6" min="0" max="10" step="0.1">
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                            <!-- Updated default to 0.6% -->
+                            <input type="range" id="swiss-inflation" min="0" max="6" value="0.6" step="0.1" class="slider">
+                            <span class="input-note">
+                                <span lang="de">Aktuelle Teuerung Schweiz (Mai 2026): <strong>0.6%</strong>.</span>
+                                <span lang="en">Current Swiss inflation rate (May 2026): <strong>0.6%</strong>.</span>
+                            </span>
+                        </div>
+
+                        <div class="input-group-row">
+                            <div class="input-group half">
+                                <label for="swiss-bank-rate">
+                                    <span lang="de">Zinsfuss Bankkonto</span>
+                                    <span lang="en">Bank Interest Rate</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="swiss-bank-rate-num" value="0.5" min="0" max="5" step="0.1">
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                            <div class="input-group half">
+                                <label for="swiss-market-rate">
+                                    <span lang="de">Rendite Aktien</span>
+                                    <span lang="en">Investing Return</span>
+                                </label>
+                                <div class="numeric-wrapper">
+                                    <input type="number" id="swiss-market-rate-num" value="6.5" min="0" max="15" step="0.1">
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Scenarios Comparison Grid -->
+                    <div class="display-panel">
+                        <!-- Pillars and Cash Metrics (4 Cards) -->
+                        <div class="scenarios-grid">
+                            <!-- Card 1: Bank Savings (3b Cash) -->
+                            <div class="scenario-card glass-card border-red">
+                                <div class="scenario-badge badge-red">
+                                    <span lang="de">Bankkonto (Säule 3b Cash)</span>
+                                    <span lang="en">Bank Account (3b Cash)</span>
+                                </div>
+                                <div class="scenario-val-container">
+                                    <div class="nominal-val font-outfit" id="scenario-bank-nominal">CHF 227'908</div>
+                                    <span class="label-muted" lang="de">Nominalwert</span>
+                                    <span class="label-muted" lang="en">Nominal Value</span>
+                                </div>
+                                <div class="real-val-container">
+                                    <div class="real-val text-red font-outfit" id="scenario-bank-real">CHF 171'419</div>
+                                    <span class="label-muted" lang="de">Realwert (Kaufkraftbereinigt)</span>
+                                    <span class="label-muted" lang="en">Real Value (Inflation-adjusted)</span>
+                                </div>
+                                <div class="scenario-loss-indicator" id="scenario-bank-loss">
+                                    <span>⚠️ <span lang="de">Kaufkraftverlust:</span><span lang="en">Lost Purchasing Power:</span> <strong>CHF 56'489</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Pillar 3b Invested -->
+                            <div class="scenario-card glass-card border-blue">
+                                <div class="scenario-badge badge-blue">
+                                    <span lang="de">Säule 3b Investiert (Aktien)</span>
+                                    <span lang="en">Pillar 3b Invested (Stocks)</span>
+                                </div>
+                                <div class="scenario-val-container">
+                                    <div class="nominal-val font-outfit text-primary" id="scenario-3b-nominal">CHF 621'980</div>
+                                    <span class="label-muted" lang="de">Nominalwert (Rendite)</span>
+                                    <span class="label-muted" lang="en">Nominal Value (Equity Return)</span>
+                                </div>
+                                <div class="real-val-container">
+                                    <div class="real-val font-outfit text-white" id="scenario-3b-real">CHF 364'229</div>
+                                    <span class="label-muted" lang="de">Realwert (Kein Steuervorteil)</span>
+                                    <span class="label-muted" lang="en">Real Value (No Tax Savings)</span>
+                                </div>
+                                <div class="scenario-loss-indicator" id="scenario-3b-tax">
+                                    <span>🔓 <span lang="de">Flexibler Zugriff (Kein Lock-up)</span><span lang="en">Flexible Access (No Lock-up)</span></span>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Pillar 3a Cash -->
+                            <div class="scenario-card glass-card border-yellow">
+                                <div class="scenario-badge badge-yellow">
+                                    <span lang="de">Säule 3a Sparkonto (Cash)</span>
+                                    <span lang="en">Pillar 3a Cash Account</span>
+                                </div>
+                                <div class="scenario-val-container">
+                                    <div class="nominal-val font-outfit" id="scenario-3a-cash-nominal">CHF 227'908</div>
+                                    <span class="label-muted" lang="de">Nominalwert</span>
+                                    <span class="label-muted" lang="en">Nominal Value</span>
+                                </div>
+                                <div class="real-val-container">
+                                    <div class="real-val text-yellow font-outfit" id="scenario-3a-cash-real">CHF 224'319</div>
+                                    <span class="label-muted" lang="de">Realwert (+ Steuerersparnis)</span>
+                                    <span class="label-muted" lang="en">Real Value (+ Tax Savings)</span>
+                                </div>
+                                <div class="scenario-loss-indicator" id="scenario-3a-cash-gain">
+                                    <span>💰 <span lang="de">Steuerersparnis gesamt:</span><span lang="en">Total Tax Saved:</span> <strong>CHF 52'920</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Card 4: Pillar 3a Invested -->
+                            <div class="scenario-card glass-card border-green highlight-card">
+                                <div class="scenario-badge badge-green">
+                                    <span lang="de">Säule 3a Investiert (Aktien)</span>
+                                    <span lang="en">Pillar 3a Invested (Stocks)</span>
+                                </div>
+                                <div class="scenario-val-container">
+                                    <div class="nominal-val font-outfit text-green" id="scenario-3a-inv-nominal">CHF 621'980</div>
+                                    <span class="label-muted" lang="de">Nominalwert (Fonds-Rendite)</span>
+                                    <span class="label-muted" lang="en">Nominal Value (Fund Return)</span>
+                                </div>
+                                <div class="real-val-container">
+                                    <div class="real-val font-outfit text-white" id="scenario-3a-inv-real">CHF 417'149</div>
+                                    <span class="label-muted" lang="de">Realwert + Steuerersparnis</span>
+                                    <span class="label-muted" lang="en">Real Value + Tax Savings</span>
+                                </div>
+                                <div class="scenario-loss-indicator" id="scenario-3a-inv-tax">
+                                    <span>🚀 <span lang="de">Vorteil vs. Bank:</span><span lang="en">Advantage vs Bank:</span> <strong>+CHF 394'072</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenarios Chart -->
+                        <div class="glass-card chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">
+                                    <span lang="de">Kaufkraft-Vergleich (Inflationsbereinigt & Steuerbereinigt)</span>
+                                    <span lang="en">Real Purchasing Power Comparison (Inflation & Tax Adjusted)</span>
+                                </h3>
+                                <div class="chart-legend-custom">
+                                    <span class="legend-item"><span class="dot dot-red"></span> <span lang="de">Bank-Sparkonto</span><span lang="en">Savings Account</span></span>
+                                    <span class="legend-item"><span class="dot dot-white"></span> <span lang="de">Säule 3b (Investiert)</span><span lang="en">Pillar 3b (Invested)</span></span>
+                                    <span class="legend-item"><span class="dot dot-yellow"></span> <span lang="de">3a Cash + Steuervorteil</span><span lang="en">3a Cash + Tax Savings</span></span>
+                                    <span class="legend-item"><span class="dot dot-green"></span> <span lang="de">3a Investiert + Steuervorteil</span><span lang="en">3a Invested + Tax Savings</span></span>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="scenariosChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: COMPARE INVESTMENT OPTIONS -->
+            <section id="section-compare" class="dashboard-section">
+                <div class="compare-stack">
+                    <!-- Intro -->
+                    <div class="compare-head">
+                        <h2 class="card-title">
+                            <span lang="de">Zwei Optionen vergleichen</span>
+                            <span lang="en">Compare Two Options</span>
+                        </h2>
+                        <p class="card-intro">
+                            <span lang="de">Sehen Sie, wie sich gleiche monatliche Beiträge über die Zeit unterschiedlich entwickeln. Die Bandbreite zeigt das Risiko (gute vs. schlechte Marktphasen). Passen Sie die Parameter unten an.</span>
+                            <span lang="en">See how identical monthly contributions grow differently over time. The shaded range shows the risk (good vs. weak market periods). Adjust the parameters below.</span>
+                        </p>
+                    </div>
+
+                    <!-- 1. NUMBERS (compact, on top) -->
+                    <div class="compare-cards-grid">
+                        <!-- Card A -->
+                        <div class="scenario-card glass-card compare-result-card" id="cmp-card-a">
+                            <div class="compare-badges">
+                                <span class="pillar-badge" id="cmp-pillar-a">3b</span>
+                                <span class="risk-badge" id="cmp-risk-a">–</span>
+                            </div>
+                            <h3 class="compare-opt-name" id="cmp-name-a">Option A</h3>
+                            <div class="nominal-val font-outfit" id="cmp-mid-a">CHF 0</div>
+                            <span class="label-muted compare-mid-lbl">
+                                <span lang="de">Erwarteter Endwert (Mittel)</span>
+                                <span lang="en">Expected final value (mid)</span>
+                            </span>
+                            <div class="compare-substats">
+                                <div><span class="label-muted" lang="de">Bandbreite</span><span class="label-muted" lang="en">Range</span><strong id="cmp-range-a">–</strong></div>
+                                <div><span class="label-muted" lang="de">Eingezahlt</span><span class="label-muted" lang="en">Contributed</span><strong id="cmp-contrib-a">CHF 0</strong></div>
+                                <div><span class="label-muted" lang="de">Gewinn</span><span class="label-muted" lang="en">Gain</span><strong class="text-green" id="cmp-gain-a">CHF 0</strong></div>
+                            </div>
+                            <p class="compare-trait" id="cmp-trait-a"></p>
+                        </div>
+
+                        <!-- Card B -->
+                        <div class="scenario-card glass-card compare-result-card" id="cmp-card-b">
+                            <div class="compare-badges">
+                                <span class="pillar-badge" id="cmp-pillar-b">3b</span>
+                                <span class="risk-badge" id="cmp-risk-b">–</span>
+                            </div>
+                            <h3 class="compare-opt-name" id="cmp-name-b">Option B</h3>
+                            <div class="nominal-val font-outfit" id="cmp-mid-b">CHF 0</div>
+                            <span class="label-muted compare-mid-lbl">
+                                <span lang="de">Erwarteter Endwert (Mittel)</span>
+                                <span lang="en">Expected final value (mid)</span>
+                            </span>
+                            <div class="compare-substats">
+                                <div><span class="label-muted" lang="de">Bandbreite</span><span class="label-muted" lang="en">Range</span><strong id="cmp-range-b">–</strong></div>
+                                <div><span class="label-muted" lang="de">Eingezahlt</span><span class="label-muted" lang="en">Contributed</span><strong id="cmp-contrib-b">CHF 0</strong></div>
+                                <div><span class="label-muted" lang="de">Gewinn</span><span class="label-muted" lang="en">Gain</span><strong class="text-green" id="cmp-gain-b">CHF 0</strong></div>
+                            </div>
+                            <p class="compare-trait" id="cmp-trait-b"></p>
+                        </div>
+                    </div>
+
+                    <div class="compare-diff-box" id="cmp-diff-box"></div>
+
+                    <!-- 2. GRAPH (middle) -->
+                    <div class="glass-card chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <span lang="de">Vermögensentwicklung mit Risiko-Bandbreite</span>
+                                <span lang="en">Wealth Growth with Risk Range</span>
+                            </h3>
+                            <div class="chart-legend-custom">
+                                <span class="legend-item"><span class="dot" id="cmp-legend-dot-a"></span> <span id="cmp-legend-a">Option A</span></span>
+                                <span class="legend-item"><span class="dot" id="cmp-legend-dot-b"></span> <span id="cmp-legend-b">Option B</span></span>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="compareChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 3. PARAMETERS (bottom) -->
+                    <div class="glass-card controls-card compare-controls">
+                        <h3 class="input-section-divider">
+                            <span lang="de">Parameter anpassen</span>
+                            <span lang="en">Adjust Parameters</span>
+                        </h3>
+                        <div class="compare-controls-grid">
+                            <div class="input-group">
+                                <label for="cmp-option-a">
+                                    <span lang="de">Option A</span>
+                                    <span lang="en">Option A</span>
+                                </label>
+                                <select id="cmp-option-a" class="custom-select"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="cmp-option-b">
+                                    <span lang="de">Option B</span>
+                                    <span lang="en">Option B</span>
+                                </label>
+                                <select id="cmp-option-b" class="custom-select"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-header">
+                                    <label for="cmp-years">
+                                        <span lang="de">Anlagehorizont</span>
+                                        <span lang="en">Time Horizon</span>
+                                    </label>
+                                    <div class="numeric-wrapper">
+                                        <input type="number" id="cmp-years-num" value="30" min="1" max="50">
+                                        <span class="suffix" lang="de">Jahre</span>
+                                        <span class="suffix" lang="en">Years</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="cmp-years" min="1" max="50" value="30" step="1" class="slider">
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-header">
+                                    <label for="cmp-principal">
+                                        <span lang="de">Startkapital</span>
+                                        <span lang="en">Initial Capital</span>
+                                    </label>
+                                    <div class="numeric-wrapper">
+                                        <span class="currency">CHF</span>
+                                        <input type="number" id="cmp-principal-num" value="0" min="0" step="500">
+                                    </div>
+                                </div>
+                                <input type="range" id="cmp-principal" min="0" max="100000" value="0" step="1000" class="slider">
+                            </div>
+
+                            <div class="input-group cmp-span-2">
+                                <div class="input-header">
+                                    <label for="cmp-contribution">
+                                        <span lang="de">Monatliche Einzahlung</span>
+                                        <span lang="en">Monthly Contribution</span>
+                                    </label>
+                                    <div class="numeric-wrapper">
+                                        <span class="currency">CHF</span>
+                                        <input type="number" id="cmp-contribution-num" value="300" min="0" step="50">
+                                    </div>
+                                </div>
+                                <input type="range" id="cmp-contribution" min="0" max="3000" value="300" step="50" class="slider">
+                                <span class="input-note">
+                                    <span lang="de">Schon wenige Hundert Franken pro Monat summieren sich über Jahrzehnte zu beträchtlichem Vermögen.</span>
+                                    <span lang="en">Even a few hundred francs per month add up to substantial wealth over decades.</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="info-callout">
+                            <span lang="de"><strong>3a vs. 3b:</strong> Die <strong>Säule 3a</strong> ist gebunden, spart aber jährlich Steuern. Alles Übrige gehört zur flexiblen <strong>Säule 3b</strong> – jederzeit verfügbar, Kursgewinne steuerfrei. Beide können mit Aktien-ETFs echtes Vermögen aufbauen.</span>
+                            <span lang="en"><strong>3a vs. 3b:</strong> <strong>Pillar 3a</strong> is locked but saves tax every year. Everything else is the flexible <strong>Pillar 3b</strong> – available anytime, capital gains tax-free. Both can build real wealth with equity ETFs.</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Attribute Comparison Table -->
+                    <div class="glass-card compare-table-card">
+                            <h3 class="chart-title compare-table-title">
+                                <span lang="de">Eigenschaften im Direktvergleich</span>
+                                <span lang="en">Attributes Side by Side</span>
+                            </h3>
+                            <table class="compare-table">
+                                <thead>
+                                    <tr>
+                                        <th><span lang="de">Eigenschaft</span><span lang="en">Attribute</span></th>
+                                        <th id="cmp-th-a">Option A</th>
+                                        <th id="cmp-th-b">Option B</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span lang="de">Säule</span><span lang="en">Pillar</span></td>
+                                        <td id="cmp-tbl-pillar-a">–</td>
+                                        <td id="cmp-tbl-pillar-b">–</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span lang="de">Erwartete Rendite p.a.</span><span lang="en">Expected return p.a.</span></td>
+                                        <td id="cmp-tbl-return-a">–</td>
+                                        <td id="cmp-tbl-return-b">–</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span lang="de">Risiko</span><span lang="en">Risk</span></td>
+                                        <td id="cmp-tbl-risk-a">–</td>
+                                        <td id="cmp-tbl-risk-b">–</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span lang="de">Steuervorteil</span><span lang="en">Tax advantage</span></td>
+                                        <td id="cmp-tbl-tax-a">–</td>
+                                        <td id="cmp-tbl-tax-b">–</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span lang="de">Verfügbarkeit</span><span lang="en">Availability</span></td>
+                                        <td id="cmp-tbl-access-a">–</td>
+                                        <td id="cmp-tbl-access-b">–</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="compare-table-note">
+                                <span lang="de">Renditen sind nominale Annahmen vor Steuern und Gebühren, basierend auf historischen Langfristwerten – keine Garantie für die Zukunft. Der Steuervorteil der Säule 3a ist hier nicht in die Werte eingerechnet (siehe «Säulen & Inflation»).</span>
+                                <span lang="en">Returns are nominal assumptions before tax and fees, based on long-term historical figures – not a guarantee of future results. The Pillar 3a tax advantage is not included in the values here (see "Pillars & Inflation").</span>
+                            </p>
+                        </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: FINANCIAL LITERACY GUIDE -->
+            <section id="section-guide" class="dashboard-section">
+                <div class="guide-container glass-card">
+                    <!-- Tabs for different guides -->
+                    <div class="guide-tabs">
+                        <button class="guide-tab-btn active" data-tab="guide-compounding">
+                            <span lang="de">1. Zinseszins-Effekt</span>
+                            <span lang="en">1. Compounding Power</span>
+                        </button>
+                        <button class="guide-tab-btn" data-tab="guide-inflation">
+                            <span lang="de">2. Inflation & Bank-Falle</span>
+                            <span lang="en">2. Inflation & Bank Trap</span>
+                        </button>
+                        <button class="guide-tab-btn" data-tab="guide-swiss-pillars">
+                            <span lang="de">3. Schweizer 3 Säulen</span>
+                            <span lang="en">3. Swiss 3 Pillars</span>
+                        </button>
+                        <button class="guide-tab-btn" data-tab="guide-investing">
+                            <span lang="de">4. Richtig Investieren</span>
+                            <span lang="en">4. How to Invest</span>
+                        </button>
+                    </div>
+
+                    <div class="guide-content-panel">
+                        <!-- Guide Tab 1: Compounding -->
+                        <div class="guide-tab-content active" id="guide-compounding">
+                            <!-- GERMAN -->
+                            <div lang="de">
+                                <h2 class="guide-heading">Die Magie des Zinseszinses</h2>
+                                <p class="guide-lead">Albert Einstein nannte den Zinseszins bekanntlich das "achte Weltwunder". Wer ihn versteht, verdient ihn; wer ihn nicht versteht, bezahlt ihn. Aber warum ist dieser Effekt so stark?</p>
+                                
+                                <div class="guide-columns">
+                                    <div class="guide-text">
+                                        <h3>Was ist Zinseszins?</h3>
+                                        <p>Der Zinseszins berechnet Gewinne auf Ihr Startkapital **PLUS alle zuvor verdienten Zinsen**. Da Ihre Zinsen wiederum Zinsen generieren, wächst Ihr Vermögen nicht linear, sondern biegt sich über die Jahre exponentiell nach oben.</p>
+                                        
+                                        <h3>Die mathematische Formel</h3>
+                                        <p>Die Formel zur Berechnung der Zinseszins-Entwicklung mit regelmässigen Einzahlungen ist:</p>
+                                        <div class="math-box">
+                                            A = P (1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)]
+                                        </div>
+                                        <p>Legende:</p>
+                                        <ul>
+                                            <li><strong>A</strong> = Endguthaben (Zukünftiger Wert)</li>
+                                            <li><strong>P</strong> = Startkapital (Principal)</li>
+                                            <li><strong>r</strong> = Jährlicher Zinssatz (Rendite als Dezimalzahl)</li>
+                                            <li><strong>n</strong> = Häufigkeit der Zinsgutschrift pro Jahr (z.B. 12 = monatlich)</li>
+                                            <li><strong>t</strong> = Anzahl Jahre</li>
+                                            <li><strong>PMT</strong> = Regelmässiger Sparbetrag pro Periode</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="guide-widget glass-card">
+                                        <h4 class="widget-title">Die 72er-Regel</h4>
+                                        <p class="widget-desc">Eine einfache Faustregel, um abzuschätzen, wie viele Jahre es dauert, bis sich Ihr investiertes Kapital bei einer bestimmten jährlichen Rendite verdoppelt.</p>
+                                        <div class="widget-calc">
+                                            <div class="widget-input">
+                                                <label for="rule72-rate">Erwartete Rendite (%)</label>
+                                                <input type="number" id="rule72-rate-de" value="7.0" min="0.5" max="30" step="0.5">
+                                            </div>
+                                            <div class="widget-result">
+                                                <div class="widget-result-val font-outfit" id="rule72-result-de">10.3 Jahre</div>
+                                                <div class="widget-result-lbl">Zeitspanne bis zur Verdoppelung</div>
+                                            </div>
+                                        </div>
+                                        <p class="widget-math-note">Berechnung: \(72 \div \text{Rendite} = \text{Jahre}\)</p>
+                                    </div>
+                                </div>
+
+                                <div class="highlight-info-box">
+                                    <h4>💡 Die Kosten des Aufschiebens</h4>
+                                    <p>Wenn Sie ab 25 Jahren monatlich <strong>CHF 300</strong> sparen, haben Sie im Alter von 65 Jahren (bei 7% Rendite) ca. <strong>CHF 780'000</strong>. Warten Sie mit dem Sparen nur 10 Jahre länger und fangen erst mit 35 an, beträgt Ihr Endkapital nur noch ca. <strong>CHF 360'000</strong>. Obwohl Sie nur 36'000 CHF weniger eingezahlt haben, haben Sie über <strong>CHF 420'000</strong> an Zinseszinsgewinnen verpasst!</p>
+                                </div>
+                            </div>
+
+                            <!-- ENGLISH -->
+                            <div lang="en">
+                                <h2 class="guide-heading">The Magic of Compound Interest</h2>
+                                <p class="guide-lead">Albert Einstein famously called compound interest the "eighth wonder of the world." Those who understand it, earn it; those who don't, pay it. But what exactly makes it so powerful?</p>
+
+                                <div class="guide-columns">
+                                    <div class="guide-text">
+                                        <h3>What is Compound Interest?</h3>
+                                        <p>Simple interest only calculates returns on your initial deposit (principal). Compound interest calculates returns on your **principal PLUS all previously accumulated interest**. As your gains earn gains, the growth curve bends upwards exponentially.</p>
+                                        
+                                        <h3>The Mathematical Formula</h3>
+                                        <p>The standard compounding formula for an investment with regular contributions is:</p>
+                                        <div class="math-box">
+                                            A = P (1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)]
+                                        </div>
+                                        <p>Where:</p>
+                                        <ul>
+                                            <li><strong>A</strong> = Final Balance (Future Value)</li>
+                                            <li><strong>P</strong> = Initial Principal</li>
+                                            <li><strong>r</strong> = Annual Interest Rate (decimal)</li>
+                                            <li><strong>n</strong> = Number of compounding periods per year</li>
+                                            <li><strong>t</strong> = Number of years</li>
+                                            <li><strong>PMT</strong> = Contribution amount per period</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="guide-widget glass-card">
+                                        <h4 class="widget-title">Rule of 72 Estimator</h4>
+                                        <p class="widget-desc">A simple mental shortcut to estimate how many years it takes for your investment to double, given a fixed annual return.</p>
+                                        <div class="widget-calc">
+                                            <div class="widget-input">
+                                                <label for="rule72-rate">Expected Return (%)</label>
+                                                <input type="number" id="rule72-rate-en" value="7.0" min="0.5" max="30" step="0.5">
+                                            </div>
+                                            <div class="widget-result">
+                                                <div class="widget-result-val font-outfit" id="rule72-result-en">10.3 Years</div>
+                                                <div class="widget-result-lbl">Time to double your money</div>
+                                            </div>
+                                        </div>
+                                        <p class="widget-math-note">Formula: \(72 \div \text{Return Rate} = \text{Years to Double}\)</p>
+                                    </div>
+                                </div>
+
+                                <div class="highlight-info-box">
+                                    <h4>💡 The Cost of Delaying</h4>
+                                    <p>If you start saving <strong>CHF 300/month</strong> at age 25, by age 65 (at 7% return) you will have <strong>CHF 780,000</strong>. If you wait until age 35 to start, you will only accumulate <strong>CHF 360,000</strong>. Even though you only missed 10 years of contributions (CHF 36,000), you lose out on <strong>CHF 420,000</strong> in compound growth!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guide Tab 2: Inflation -->
+                        <div class="guide-tab-content" id="guide-inflation">
+                            <!-- GERMAN -->
+                            <div lang="de">
+                                <h2 class="guide-heading">Inflation: Der stille Dieb Ihrer Kaufkraft</h2>
+                                <p class="guide-lead">Die meisten Menschen glauben, dass Geld auf einem Sparbuch absolut "sicher" aufgehoben ist. In Wahrheit sorgt die Inflation für einen garantierten, schleichenden Vermögensverlust bei Bargeld.</p>
+
+                                <div class="guide-columns">
+                                    <div class="guide-text">
+                                        <h3>Was ist Inflation?</h3>
+                                        <p>Inflation bezeichnet den allgemeinen Preisanstieg von Waren und Dienstleistungen, wodurch der reale Wert des Geldes sinkt. Bei einer Teuerung von 2% kostet ein Artikel, der heute CHF 100 kostet, im nächsten Jahr CHF 102. Ihr Geld verliert somit 2% an Kaufkraft.</p>
+                                        
+                                        <h3>Nominale vs. Reale Rendite</h3>
+                                        <p>Erhalten Sie auf dem Sparkonto <strong>0.5% Zinsen</strong>, während die Inflation <strong>0.6%</strong> beträgt, wächst Ihr Kontostand nominal zwar leicht an. Die **Reale Rendite** (bereinigt um Inflation) ist jedoch negativ: \(-0.1\%\). Ihr Erspartes verliert real an Wert.</p>
+                                        
+                                        <h3>Die "Cash-Falle" des Bankkontos</h3>
+                                        <p>Banken zahlen in der Schweiz meist äusserst geringe Zinsen. Wer grössere Summen langfristig auf dem Konto liegen lässt, verliert über 20-30 Jahre massiv an Kaufkraft. Cash ist unverzichtbar für Notgroschen, aber langfristig giftig für den Vermögensaufbau.</p>
+                                    </div>
+
+                                    <div class="guide-widget glass-card">
+                                        <h4 class="widget-title">Kaufkraft-Entwertung</h4>
+                                        <p class="widget-desc">Berechnen Sie, wie stark die Kaufkraft von CHF 10'000 über die Jahre durch die Inflation verringert wird.</p>
+                                        <div class="widget-calc">
+                                            <div class="widget-input-row">
+                                                <div class="w-in">
+                                                    <label for="inf-decay-rate-de">Inflation (%)</label>
+                                                    <input type="number" id="inf-decay-rate-de" value="0.6" min="0" max="15" step="0.1">
+                                                </div>
+                                                <div class="w-in">
+                                                    <label for="inf-decay-years-de">Jahre</label>
+                                                    <input type="number" id="inf-decay-years-de" value="30" min="1" max="50">
+                                                </div>
+                                            </div>
+                                            <div class="widget-result">
+                                                <div class="widget-result-val text-red font-outfit" id="inf-decay-result-de">CHF 8'356</div>
+                                                <div class="widget-result-lbl">Heutiger Gegenwert</div>
+                                            </div>
+                                        </div>
+                                        <p class="widget-math-note">Ihr Geld kauft dann nur noch soviel wie CHF 8'356 heute.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ENGLISH -->
+                            <div lang="en">
+                                <h2 class="guide-heading">Inflation: The Silent Thief of Purchasing Power</h2>
+                                <p class="guide-lead">Most people believe that leaving money in a bank savings account is "safe". In reality, keeping large sums in cash guarantees a slow, silent loss of wealth.</p>
+
+                                <div class="guide-columns">
+                                    <div class="guide-text">
+                                        <h3>Understanding Inflation</h3>
+                                        <p>Inflation is the general increase in prices and fall in the purchasing value of money. If the annual inflation rate is 2%, an item that costs CHF 100 today will cost CHF 102 next year. This means your CHF 100 can buy 2% *less* than it could before.</p>
+                                        
+                                        <h3>Nominal vs. Real Returns</h3>
+                                        <p>If your bank account gives you **0.5% interest** but inflation is at **0.6%**, your nominal balance increases slightly, but your **real return** is negative: \(-0.1\%\). Each year, you are losing purchasing power.</p>
+                                        
+                                        <h3>The "Cash Drag" Trap</h3>
+                                        <p>Many traditional banks in Switzerland pay interest rates close to 0%. Over 30 years, inflation will erode the buying power of cash in these accounts significantly. Cash is excellent for emergency funds, but toxic for long-term wealth building.</p>
+                                    </div>
+
+                                    <div class="guide-widget glass-card">
+                                        <h4 class="widget-title">Inflation Decay Visualizer</h4>
+                                        <p class="widget-desc">See how much purchasing power CHF 10,000 loses over time under different inflation rates.</p>
+                                        <div class="widget-calc">
+                                            <div class="widget-input-row">
+                                                <div class="w-in">
+                                                    <label for="inf-decay-rate-en">Inflation (%)</label>
+                                                    <input type="number" id="inf-decay-rate-en" value="0.6" min="0" max="15" step="0.1">
+                                                </div>
+                                                <div class="w-in">
+                                                    <label for="inf-decay-years-en">Years</label>
+                                                    <input type="number" id="inf-decay-years-en" value="30" min="1" max="50">
+                                                </div>
+                                            </div>
+                                            <div class="widget-result">
+                                                <div class="widget-result-val text-red font-outfit" id="inf-decay-result-en">CHF 8,356</div>
+                                                <div class="widget-result-lbl">Purchasing power equivalent</div>
+                                            </div>
+                                        </div>
+                                        <p class="widget-math-note">Your CHF 10,000 will only buy what CHF 8,356 buys today.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guide Tab 3: Swiss Pillars -->
+                        <div class="guide-tab-content" id="guide-swiss-pillars">
+                            <!-- GERMAN -->
+                            <div lang="de">
+                                <h2 class="guide-heading">Das Schweizer 3-Säulen-System</h2>
+                                <p class="guide-lead">Die Schweizer Altersvorsorge basiert auf dem Drei-Säulen-Prinzip: staatliche Existenzsicherung, berufliche Fortführung des Lebensstandards und private Selbstvorsorge. Das Verständnis der Säule 3 ist der Schlüssel zur Steueroptimierung.</p>
+
+                                <div class="pillar-cards-grid">
+                                    <div class="pillar-info-card glass-card">
+                                        <div class="pillar-num">1. Säule</div>
+                                        <h3>AHV / IV</h3>
+                                        <span class="pillar-scope">Staatliche Vorsorge</span>
+                                        <p>Obligatorisch für alle. Finanziert über das Umlageverfahren (Erwerbstätige zahlen für heutige Rentner). Sie dient der Existenzsicherung im Alter. Wichtig sind lückenlose Beitragsjahre zur Vermeidung von Kürzungen.</p>
+                                    </div>
+
+                                    <div class="pillar-info-card glass-card">
+                                        <div class="pillar-num">2. Säule</div>
+                                        <h3>BVG / Pensionskasse</h3>
+                                        <span class="pillar-scope">Berufliche Vorsorge</span>
+                                        <p>Obligatorisch für Angestellte ab CHF 22'050 Lohn. Gemeinsam von Arbeitnehmer und Arbeitgeber finanziert. Das Kapital wird im Kapitaldeckungsverfahren angespart und im Alter als Rente oder Kapital ausbezahlt.</p>
+                                    </div>
+
+                                    <div class="pillar-info-card glass-card highlight-border">
+                                        <div class="pillar-num text-primary">3. Säule</div>
+                                        <h3>Private Vorsorge</h3>
+                                        <span class="pillar-scope">Freiwilliges Sparen</span>
+                                        <p>Unterteilt in <strong>Säule 3a (gebunden)</strong> und <strong>Säule 3b (frei)</strong>. Dies ist Ihr Hebel für Steuerersparnisse und privaten Vermögensaufbau, um die Lücke zu schliessen, da 1. und 2. Säule meist nur 60% des letzten Lohns decken.</p>
+                                    </div>
+                                </div>
+
+                                <div class="guide-split">
+                                    <div class="guide-column-half">
+                                        <h3>Säule 3a (Gebundene Vorsorge)</h3>
+                                        <ul>
+                                            <li><strong>Steuervorteil:</strong> Einzahlungen können vollumfänglich vom steuerbaren Einkommen abgezogen werden. Das spart je nach Einkommen und Wohnort CHF 1'000 - 2'500 Steuern pro Jahr.</li>
+                                            <li><strong>Einzahlungslimite:</strong> Für Erwerbstätige mit Pensionskasse liegt das Limit bei CHF 7'258 (für 2026).</li>
+                                            <li><strong>Bezug:</strong> Das Kapital ist gesperrt und kann frühestens 5 Jahre vor der Pensionierung ausbezahlt werden (Ausnahmen: Wohneigentum, Auswanderung, Selbstständigkeit).</li>
+                                            <li><strong>Cash vs. Investiert:</strong> Klassische Banken legen 3a-Guthaben oft in Cash an (Zins <1%). Moderne Anbieter (z.B. VIAC, Finpension) erlauben die Investition in globale Aktien-ETFs mit historisch viel höheren Renditen.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="guide-column-half">
+                                        <h3>Säule 3b (Freie Vorsorge)</h3>
+                                        <ul>
+                                            <li><strong>Flexibilität:</strong> Keine staatlichen Einzahlungslimiten, keine Sperrfristen, freie Wahl der Begünstigten. Sie können jederzeit abheben.</li>
+                                            <li><strong>Besteuerung:</strong> Einzahlungen sind nicht steuerabzugsfähig. Dafür sind Kapitalgewinne aus privaten Aktien und ETFs in der Schweiz für Privatanleger komplett <strong>steuerfrei</strong>.</li>
+                                            <li><strong>Zweck:</strong> Ideal für den Vermögensaufbau über das 3a-Limit hinaus oder für mittelfristige Ziele (Hauskauf, Weltreise, vorzeitige Pensionierung).</li>
+                                            <li><strong>Umsetzung:</strong> Erfolgt meist über ein privates Wertpapierdepot (z.B. Interactive Brokers, Swissquote) durch den Kauf von kostengünstigen ETFs.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ENGLISH -->
+                            <div lang="en">
+                                <h2 class="guide-heading">The Swiss 3-Pillar Retirement System</h2>
+                                <p class="guide-lead">Switzerland's pension system is divided into three sections: State Pension, Occupational Pension, and Private Pension. Understanding how they interconnect is vital to maximizing tax efficiency.</p>
+
+                                <div class="pillar-cards-grid">
+                                    <div class="pillar-info-card glass-card">
+                                        <div class="pillar-num">Pillar 1</div>
+                                        <h3>AHV / IV</h3>
+                                        <span class="pillar-scope">State Pension</span>
+                                        <p>Mandatory for all Swiss residents. Funded via payroll deductions (solidarity principle: today's workers pay for today's pensioners). It aims to cover basic subsistence costs in retirement. Maximizing this requires uninterrupted contributions.</p>
+                                    </div>
+
+                                    <div class="pillar-info-card glass-card">
+                                        <div class="pillar-num">Pillar 2</div>
+                                        <h3>BVG / Pension Fund</h3>
+                                        <span class="pillar-scope">Occupational Pension</span>
+                                        <p>Mandatory for employees earning above CHF 22,050. Funded jointly by you and your employer. Accumulated capital compounds over your career. Upon retirement, you can take a lump-sum payout or a lifetime pension annuity (conversion rate).</p>
+                                    </div>
+
+                                    <div class="pillar-info-card glass-card highlight-border">
+                                        <div class="pillar-num text-primary">Pillar 3</div>
+                                        <h3>Private Pension</h3>
+                                        <span class="pillar-scope">Voluntary Savings</span>
+                                        <p>Divided into <strong>3a (Restricted)</strong> and <strong>3b (Unrestricted)</strong>. This is your primary lever for tax savings and global wealth building. Since Pillar 1 & 2 usually only cover about 60% of pre-retirement income, Pillar 3 is essential to close the gap.</p>
+                                    </div>
+                                </div>
+
+                                <div class="guide-split">
+                                    <div class="guide-column-half">
+                                        <h3>Pillar 3a (Restricted / Bound)</h3>
+                                        <ul>
+                                            <li><strong>Tax Deductions:</strong> Contributions are fully deductible from taxable income, saving you CHF 1,000 - 2,500 annually depending on income and canton.</li>
+                                            <li><strong>Annual Caps:</strong> Max limit for employees is CHF 7,258 (for 2026).</li>
+                                            <li><strong>Withdrawals:</strong> Locked until 5 years before standard retirement, with exceptions for buying residential property, leaving Switzerland, or starting a business.</li>
+                                            <li><strong>Cash vs. Invested:</strong> Traditional banks put 3a in cash (yielding <1%). Digital providers (like VIAC, Finpension) allow you to invest up to 99% of your 3a in global stock ETFs, matching stock market returns tax-free.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="guide-column-half">
+                                        <h3>Pillar 3b (Unrestricted / Free)</h3>
+                                        <ul>
+                                            <li><strong>Flexibility:</strong> No withdrawal restrictions, no yearly limits, and no specific lock-in periods. You can withdraw anytime.</li>
+                                            <li><strong>Taxation:</strong> Contributions are made from *already taxed* income (no deduction). However, capital gains on global investments (stocks/ETFs) are **tax-free in Switzerland** for private investors.</li>
+                                            <li><strong>Purpose:</strong> Used once the Pillar 3a annual limit is reached, or for medium-term goals like buying a house, traveling, or early retirement.</li>
+                                            <li><strong>Implementation:</strong> Typically done via self-directed brokerage accounts (e.g., Interactive Brokers, Swissquote) investing in broad global index ETFs.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guide Tab 4: How to Invest -->
+                        <div class="guide-tab-content" id="guide-investing">
+                            <!-- GERMAN -->
+                            <div lang="de">
+                                <h2 class="guide-heading">Wie investiert man richtig?</h2>
+                                <p class="guide-lead">Investieren muss nicht kompliziert sein. Für 95% der Menschen ist eine einfache, passive Anlagestrategie ertragreicher und nervenschonender als aktiver Aktienhandel.</p>
+
+                                <div class="step-guide">
+                                    <div class="step-item">
+                                        <div class="step-number">1</div>
+                                        <div class="step-details">
+                                            <h3>Notgroschen aufbauen</h3>
+                                            <p>Bevor Sie anfangen zu investieren, sparen Sie <strong>3 bis 6 Monatsausgaben</strong> auf einem Sparkonto an. Dieses Geld dient als Puffer für unvorhergesehene Rechnungen (Zahnarzt, Autoreparatur) und sollte niemals in Aktien investiert werden.</p>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">2</div>
+                                        <div class="step-details">
+                                            <h3>Säule 3a ausnutzen (Aktien-Fokus!)</h3>
+                                            <p>Eröffnen Sie ein Säule 3a Depot bei einem günstigen, digitalen Anbieter (z.B. VIAC, Finpension). Wenn Ihr Anlagehorizont mehr als 10 Jahre beträgt, wählen Sie eine hohe Aktienquote (80% - 100%). Zahlen Sie regelmässig ein, um das Maximum (CHF 7'258) auszunutzen.</p>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">3</div>
+                                        <div class="step-details">
+                                            <h3>Überschüssiges Geld in Säule 3b investieren</h3>
+                                            <p>Haben Sie die Säule 3a maximiert und noch Geld übrig, eröffnen Sie ein Wertpapierdepot (z.B. Interactive Brokers, Swissquote). Investieren Sie monatlich in einen breit gestreuten, weltweiten Aktien-ETF (z.B. Vanguard FTSE All-World). Das liefert global marktgerechte Renditen (historisch 6-8% p.a.).</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="investing-concepts">
+                                    <div class="concept-card glass-card">
+                                        <h4>Indexfonds & ETFs</h4>
+                                        <p>Ein ETF bildet einen kompletten Aktienkorb nach. Statt nur einzelne Aktien wie Nestlé zu kaufen, kaufen Sie mit einem weltweiten ETF Anteile an über 3'000 Unternehmen. Gehen einige Firmen pleite, fangen dies die anderen auf (Diversifikation).</p>
+                                    </div>
+                                    <div class="concept-card glass-card">
+                                        <h4>Gebühren minimieren (TER)</h4>
+                                        <p>Gebühren sind der Feind des Zinseszinses. Ein teurer Bankfonds mit 1.5% Gebühr pro Jahr frisst über 30 Jahre hinweg **über 30% Ihrer Gesamtrendite** auf. Wählen Sie stattdessen ETFs mit einer Gebühr (TER) von unter 0.25%.</p>
+                                    </div>
+                                    <div class="concept-card glass-card">
+                                        <h4>DCA-Sparplan (Disziplin)</h4>
+                                        <p>Versuchen Sie nicht, den Markt zu timen. Richten Sie einen Dauerauftrag ein und kaufen Sie regelmässig Anteile. Bei tiefen Kursen erhalten Sie mehr Anteile für Ihr Geld, bei hohen Kursen weniger. Das senkt emotionale Fehlentscheidungen.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ENGLISH -->
+                            <div lang="en">
+                                <h2 class="guide-heading">How to Invest: A Practical Guide</h2>
+                                <p class="guide-lead">Investing doesn't have to be complicated. For 95% of people, a simple, passive investment strategy yields better results than active stock picking or complex banking products.</p>
+
+                                <div class="step-guide">
+                                    <div class="step-item">
+                                        <div class="step-number">1</div>
+                                        <div class="step-details">
+                                            <h3>Build an Emergency Fund</h3>
+                                            <p>Before investing a single Swiss Franc, save **3 to 6 months of expenses** in a high-yield savings account (HYSA) or standard bank account. This money is for emergencies (medical bills, dental issues, sudden job loss) and should never be invested in stocks.</p>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">2</div>
+                                        <div class="step-details">
+                                            <h3>Maximize Pillar 3a (Invested!)</h3>
+                                            <p>Open a low-cost, digital Pillar 3a account (e.g. Selma, VIAC, Finpension). Set your asset allocation to a high equity percentage (e.g., 80% to 100% stocks) if your investment timeline is > 10 years. Automate monthly contributions to hit the annual limit (CHF 7,258).</p>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number">3</div>
+                                        <div class="step-details">
+                                            <h3>Invest Surplus in Pillar 3b (Index ETFs)</h3>
+                                            <p>If you have money left over after maximizing Pillar 3a, open a brokerage account (like Interactive Brokers or Swissquote). Invest regularly (monthly or quarterly) in broad, low-cost global index ETFs (such as Vanguard FTSE All-World or MSCI World). This matches global stock market returns (historically 6-8% nominal per year) at minimal fees.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="investing-concepts">
+                                    <div class="concept-card glass-card">
+                                        <h4>Index Funds / ETFs</h4>
+                                        <p>An ETF (Exchange Traded Fund) tracks an entire basket of stocks. Instead of buying one company like Nestlé, you buy a global ETF which holds 3,000+ companies. If a few companies fail, your overall portfolio is protected by the others.</p>
+                                    </div>
+                                    <div class="concept-card glass-card">
+                                        <h4>Minimize Fees (TER)</h4>
+                                        <p>Fees are the enemy of compounding. A bank-managed fund charging a 1.5% yearly management fee (TER) will eat up **more than 30% of your total gains** over 30 years. Look for low-cost ETFs with a TER of 0.07% to 0.22%.</p>
+                                    </div>
+                                    <div class="concept-card glass-card">
+                                        <h4>DCA (Dollar-Cost Averaging)</h4>
+                                        <p>Don't try to time the market. Set a recurring transfer and buy regardless of whether the market is up or down. When prices are low, your monthly money buys more shares; when prices are high, it buys fewer. This reduces emotional mistakes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Application Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>
