@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+# GitHub Pages configuration for FinLit.ch
+#
+# IMPORTANT: GitHub Pages reads this file under the name "_config.yml"
+# (underscore prefix, ".yml" extension) in the repository root — NOT
+# "config.yaml". If you rename it, GitHub will ignore it.
+#
+# For a plain HTML/CSS/JS site like this one, the file is OPTIONAL. It only
+# matters if you want GitHub's Jekyll builder to know your site's metadata,
+# or to exclude certain files from the published site. If you would rather
+# skip Jekyll entirely, delete this file and add an empty file named
+# ".nojekyll" instead (that makes builds faster and serves files as-is).
+# ----------------------------------------------------------------------------
+
+title: "FinLit.ch"
+description: "Interaktiver Finanzrechner & Bildungsplattform zum Schweizer 3-Säulen-Vorsorgesystem."
+lang: de-CH
+
+# Your live address: the free GitHub Pages project URL.
+url: "https://githubarin.github.io"
+baseurl: "/FinLit"
+
+# Files that should NOT be copied into the published website.
+exclude:
+  - README.md
+  - .gitignore
+  - _config.yml
