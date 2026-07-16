@@ -1239,10 +1239,10 @@ a {
 }
 
 /* Language-specific display toggling */
-[lang="de"] {
+html [lang="de"] {
     display: inline;
 }
-[lang="en"] {
+html [lang="en"] {
     display: none !important;
 }
 
@@ -1250,7 +1250,7 @@ html[lang="en"] [lang="de"] {
     display: none !important;
 }
 html[lang="en"] [lang="en"] {
-    display: inline;
+    display: inline !important;
 }
 
 /* Block level tags */
@@ -1261,7 +1261,7 @@ html[lang="en"] p[lang="de"], html[lang="en"] div[lang="de"], html[lang="en"] h2
     display: none !important;
 }
 html[lang="en"] p[lang="en"], html[lang="en"] div[lang="en"], html[lang="en"] h2[lang="en"], html[lang="en"] h3[lang="en"], html[lang="en"] h4[lang="en"], html[lang="en"] ul[lang="en"], html[lang="en"] li[lang="en"], html[lang="en"] span.suffix[lang="en"] {
-    display: block;
+    display: block !important;
 }
 
 /* Flex items */
@@ -1272,7 +1272,7 @@ html[lang="en"] .nav-item[lang="de"], html[lang="en"] .scenario-card[lang="de"] 
     display: none !important;
 }
 html[lang="en"] .nav-item[lang="en"], html[lang="en"] .scenario-card[lang="en"] {
-    display: flex;
+    display: flex !important;
 }
 
 /* Grid items */
@@ -1283,7 +1283,7 @@ html[lang="en"] .guide-columns[lang="de"] {
     display: none !important;
 }
 html[lang="en"] .guide-columns[lang="en"] {
-    display: grid;
+    display: grid !important;
 }
 
 /* ==========================================
